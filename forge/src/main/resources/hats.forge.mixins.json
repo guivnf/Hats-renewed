@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.guivnf.mods.hats.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "MixinLivingEntityRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

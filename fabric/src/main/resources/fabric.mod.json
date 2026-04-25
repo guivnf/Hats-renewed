@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "hats",
+  "version": "${version}",
+  "name": "Hats",
+  "description": "Put a hat on it.",
+  "authors": ["iChun", "guivnf"],
+  "license": "LGPL",
+  "icon": "hats.png",
+  "entrypoints": {
+    "main": ["me.guivnf.mods.hats.fabric.HatsFabric"],
+    "client": ["me.guivnf.mods.hats.fabric.HatsFabricClient"]
+  },
+  "mixins": [
+    "hats.mixins.json",
+    "hats.fabric.mixins.json",
+    "hats.compat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15",
+    "fabric-api": "*",
+    "architectury": ">=9",
+    "minecraft": "~1.20.1"
+  }
+}

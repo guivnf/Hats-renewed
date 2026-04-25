@@ -1,0 +1,62 @@
+{
+  "itemGroup.hats": "Hats",
+
+  "item.hats.hat_launcher": "Hat Launcher",
+
+  "hats.key.hatsMenu": "Open Hats Menu",
+  "key.categories.hats": "Hats",
+
+  "hats.gui.title": "Hats",
+  "hats.gui.tab.hats": "Hats",
+  "hats.gui.import": "Import Hat",
+  "hats.gui.export": "Export Pack",
+  "hats.gui.import.hint": "Drop a .tbl or .geo.json hat file here to import it into your collection.",
+  "hats.gui.export.hint": "Select hats above and click Export to create a shareable hat pack zip.",
+  "hats.gui.search": "Search...",
+  "hats.gui.equip": "Equip",
+  "hats.gui.equipped": "Equipped",
+  "hats.gui.remove": "Remove",
+  "hats.gui.trade": "Trade",
+  "hats.gui.sort": "Sort",
+  "hats.gui.favourite": "Favourite",
+  "hats.gui.colour": "Colour",
+  "hats.gui.enchant": "Enchanted",
+  "hats.gui.no_hats": "No hats loaded.",
+
+  "hats.rarity.common": "Common",
+  "hats.rarity.uncommon": "Uncommon",
+  "hats.rarity.rare": "Rare",
+  "hats.rarity.epic": "Epic",
+  "hats.rarity.legendary": "Legendary",
+
+  "hats.token.singular": "%s token",
+  "hats.token.plural": "%s tokens",
+
+  "hats.warning.client_only": "Hats is running in client-only mode. Hat rewards from mobs are disabled.",
+  "hats.warning.version_mismatch": "Hats version mismatch between client and server.",
+
+  "hats.advancement.root.title": "Hats",
+  "hats.advancement.root.desc": "A hatted adventure awaits.",
+  "hats.advancement.first_hat.title": "Hatter",
+  "hats.advancement.first_hat.desc": "Obtain your first hat.",
+  "hats.advancement.ten_hats.title": "Mad Hatter",
+  "hats.advancement.ten_hats.desc": "Collect 10 hats.",
+  "hats.advancement.wear_hat.title": "Wearing It Well",
+  "hats.advancement.wear_hat.desc": "Put on a hat.",
+  "hats.advancement.wear_accessory.title": "Accessorised",
+  "hats.advancement.wear_accessory.desc": "Wear a hat with an accessory.",
+  "hats.advancement.colourise.title": "Fashionista",
+  "hats.advancement.colourise.desc": "Apply a custom colour to a hat.",
+
+  "hats.toast.new_hat": "New Hat Unlocked!",
+  "hats.toast.new_accessory": "New Accessory Unlocked!",
+
+  "hats.placement.title": "Hat Placement Editor",
+  "hats.placement.entity": "Entity:",
+  "hats.placement.hat": "Preview Hat:",
+  "hats.placement.offset": "Offset / Scale:",
+  "hats.placement.export": "Export",
+  "hats.placement.import": "Import",
+  "hats.placement.done": "Done",
+  "hats.placement.wireframe": "(wireframe)"
+}

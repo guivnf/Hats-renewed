@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "me.guivnf.mods.hats.mixin.compat",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "MixinEpicFightEntityPatch",
+    "MixinPatchedCapeLayer",
+    "MixinClothObject"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

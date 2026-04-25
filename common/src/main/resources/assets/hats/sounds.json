@@ -1,0 +1,14 @@
+{
+  "poof": {
+    "category": "block",
+    "sounds": ["hats:poof"]
+  },
+  "tube": {
+    "category": "block",
+    "sounds": ["hats:tube"]
+  },
+  "bonk": {
+    "category": "block",
+    "sounds": ["hats:bonk"]
+  }
+}

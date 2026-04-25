@@ -1,0 +1,22 @@
+accessWidener v2 named
+
+# ModelPart internals — needed to read cube geometry and walk the bone tree
+accessible field net/minecraft/client/model/ModelPart cubes Ljava/util/List;
+accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
+
+# AgeableListModel — baby-transform fields and head/body part iterators
+accessible field net/minecraft/client/model/AgeableListModel scaleHead Z
+accessible field net/minecraft/client/model/AgeableListModel babyYHeadOffset F
+accessible field net/minecraft/client/model/AgeableListModel babyZHeadOffset F
+accessible field net/minecraft/client/model/AgeableListModel babyHeadScale F
+accessible field net/minecraft/client/model/AgeableListModel babyBodyScale F
+accessible field net/minecraft/client/model/AgeableListModel bodyYOffset F
+accessible method net/minecraft/client/model/AgeableListModel headParts ()Ljava/lang/Iterable;
+accessible method net/minecraft/client/model/AgeableListModel bodyParts ()Ljava/lang/Iterable;
+
+# AgeableHierarchicalModel — baby scale/offset for sniffer-style models
+accessible field net/minecraft/client/model/AgeableHierarchicalModel youngScaleFactor F
+accessible field net/minecraft/client/model/AgeableHierarchicalModel bodyYOffset F
+
+# ItemProperties — needed to register custom item model predicates
+accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
