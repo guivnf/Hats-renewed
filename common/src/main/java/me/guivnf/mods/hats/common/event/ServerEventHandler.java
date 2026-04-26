@@ -4,10 +4,17 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.HatsMod;
 import me.guivnf.mods.hats.common.hat.HatPart;
 import me.guivnf.mods.hats.common.hat.HatRegistry;
+import me.guivnf.mods.hats.common.network.HatsNetwork;
 import me.guivnf.mods.hats.common.network.NetworkHelper;
+import me.guivnf.mods.hats.common.network.packet.PacketTradeOfferRevoked;
+import me.guivnf.mods.hats.common.network.packet.PacketTradePartnerLeft;
+import me.guivnf.mods.hats.common.trade.TradeBuilderSession;
+import me.guivnf.mods.hats.common.trade.TradeOffer;
+import me.guivnf.mods.hats.common.trade.TradeOfferStore;
 import me.guivnf.mods.hats.common.world.HatsSavedData;
 import me.guivnf.mods.hats.common.world.PlayerHatData;
 import net.minecraft.server.level.ServerLevel;
@@ -31,9 +38,67 @@ public class ServerEventHandler
         PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> onPlayerRespawn(player));
 
         TickEvent.SERVER_LEVEL_POST.register(ServerEventHandler::onServerLevelTick);
+        TickEvent.SERVER_POST.register(ServerEventHandler::onServerTick);
+
+        PlayerEvent.PLAYER_QUIT.register(ServerEventHandler::onPlayerQuit);
 
         dev.architectury.event.events.common.LifecycleEvent.SERVER_LEVEL_LOAD.register(
             level -> onLevelLoad((ServerLevel) level));
+    }
+
+    private static int tradeTickCounter = 0;
+
+    private static void onServerTick(net.minecraft.server.MinecraftServer server)
+    {
+        long now = System.currentTimeMillis();
+
+        for (TradeOffer expired : TradeOfferStore.get().removeExpired(now)) {
+            ServerPlayer sender = server.getPlayerList().getPlayer(expired.senderUuid);
+            ServerPlayer receiver = server.getPlayerList().getPlayer(expired.receiverUuid);
+            if (sender != null) {
+                NetworkManager.sendToPlayer(sender, HatsNetwork.TRADE_OFFER_REVOKED,
+                    PacketTradeOfferRevoked.encode(expired.offerId));
+            }
+            if (receiver != null) {
+                NetworkManager.sendToPlayer(receiver, HatsNetwork.TRADE_OFFER_REVOKED,
+                    PacketTradeOfferRevoked.encode(expired.offerId));
+            }
+        }
+
+        tradeTickCounter++;
+        if (tradeTickCounter >= 10) {
+            tradeTickCounter = 0;
+            double range = TradeOfferStore.TRADE_RANGE_BLOCKS;
+            double rSq = range * range;
+            for (TradeBuilderSession session : TradeOfferStore.get().allSessions()) {
+                ServerPlayer initiator = server.getPlayerList().getPlayer(session.initiatorUuid);
+                ServerPlayer target = server.getPlayerList().getPlayer(session.targetUuid);
+                if (initiator == null) {
+                    TradeOfferStore.get().closeSession(session.initiatorUuid);
+                    continue;
+                }
+                if (target == null || target.level() != initiator.level()
+                        || target.distanceToSqr(initiator) > rSq) {
+                    TradeOfferStore.get().closeSession(session.initiatorUuid);
+                    NetworkManager.sendToPlayer(initiator, HatsNetwork.TRADE_PARTNER_LEFT,
+                        PacketTradePartnerLeft.encode(session.targetUuid));
+                }
+            }
+        }
+    }
+
+    private static void onPlayerQuit(ServerPlayer player)
+    {
+        java.util.UUID uuid = player.getUUID();
+        TradeOfferStore.get().closeSession(uuid);
+        for (TradeOffer offer : TradeOfferStore.get().removeAllInvolving(uuid)) {
+            ServerPlayer other = player.getServer().getPlayerList().getPlayer(
+                offer.senderUuid.equals(uuid) ? offer.receiverUuid : offer.senderUuid);
+            if (other != null) {
+                NetworkManager.sendToPlayer(other, HatsNetwork.TRADE_OFFER_REVOKED,
+                    PacketTradeOfferRevoked.encode(offer.offerId));
+            }
+        }
     }
 
     private static void onServerLevelTick(ServerLevel level)

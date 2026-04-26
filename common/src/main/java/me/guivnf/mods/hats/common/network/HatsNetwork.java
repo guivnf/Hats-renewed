@@ -18,12 +18,31 @@ public class HatsNetwork
     public static final ResourceLocation NEW_HAT_TOAST          = id("new_hat_toast");
     public static final ResourceLocation LAUNCH_HAT             = id("launch_hat");
 
+    public static final ResourceLocation REQUEST_NEARBY_PLAYERS = id("request_nearby_players");
+    public static final ResourceLocation NEARBY_PLAYERS_LIST    = id("nearby_players_list");
+    public static final ResourceLocation REQUEST_PEER_INVENTORY = id("request_peer_inventory");
+    public static final ResourceLocation PEER_INVENTORY         = id("peer_inventory");
+    public static final ResourceLocation SEND_TRADE_OFFER       = id("send_trade_offer");
+    public static final ResourceLocation RESPOND_TRADE_OFFER    = id("respond_trade_offer");
+    public static final ResourceLocation INCOMING_TRADE_OFFER   = id("incoming_trade_offer");
+    public static final ResourceLocation TRADE_RESOLVED         = id("trade_resolved");
+    public static final ResourceLocation TRADE_OFFER_REVOKED    = id("trade_offer_revoked");
+    public static final ResourceLocation TRADE_PARTNER_LEFT     = id("trade_partner_left");
+    public static final ResourceLocation TRADE_ERROR            = id("trade_error");
+    public static final ResourceLocation CLOSE_TRADE_BUILDER    = id("close_trade_builder");
+
     public static void register()
     {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, HAT_CUSTOMISATION,    PacketHatCustomisation::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, REQUEST_HAT_DATA,     PacketRequestHatData::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, GIVE_HAT,             PacketGiveHat::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, LAUNCH_HAT,           PacketLaunchHat::handle);
+
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, REQUEST_NEARBY_PLAYERS, PacketRequestNearbyPlayers::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, REQUEST_PEER_INVENTORY, PacketRequestPeerInventory::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SEND_TRADE_OFFER,       PacketSendTradeOffer::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, RESPOND_TRADE_OFFER,    PacketRespondTradeOffer::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, CLOSE_TRADE_BUILDER,    PacketCloseTradeBuilder::handle);
     }
 
     public static void registerClient()
@@ -34,6 +53,14 @@ public class HatsNetwork
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, HAT_DATA_FRAGMENT,    PacketHatDataFragment::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, OPEN_HATS_GUI,        PacketOpenHatsGui::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, NEW_HAT_TOAST,        PacketNewHatToast::handle);
+
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, NEARBY_PLAYERS_LIST,  PacketNearbyPlayersList::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, PEER_INVENTORY,       PacketPeerInventory::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, INCOMING_TRADE_OFFER, PacketIncomingTradeOffer::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, TRADE_RESOLVED,       PacketTradeResolved::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, TRADE_OFFER_REVOKED,  PacketTradeOfferRevoked::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, TRADE_PARTNER_LEFT,   PacketTradePartnerLeft::handle);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, TRADE_ERROR,          PacketTradeError::handle);
     }
 
     private static ResourceLocation id(String path)

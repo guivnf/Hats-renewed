@@ -22,32 +22,34 @@ public abstract class HatRenderTypes extends RenderType
             Util.memoize(texture ->
             {
                 CompositeState state = CompositeState.builder()
-                        .setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntityCutoutNoCullShader))
+                        .setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntityTranslucentShader))
                         .setTextureState(new TextureStateShard(texture, false, false))
-                        .setTransparencyState(NO_TRANSPARENCY)
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                         .setCullState(NO_CULL)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
                         .createCompositeState(false);
-                return create("hat_entity_cutout_no_cull",
+                return create("hat_entity_translucent_no_cull",
                         DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
-                        1536, true, false, state);
+                        1536, true, true, state);
             });
 
     private static final Function<ResourceLocation, RenderType> HAT_TRANSLUCENT_CULL =
             Util.memoize(texture ->
             {
                 CompositeState state = CompositeState.builder()
-                        .setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntityCutoutShader))
+                        .setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntityTranslucentCullShader))
                         .setTextureState(new TextureStateShard(texture, false, false))
-                        .setTransparencyState(NO_TRANSPARENCY)
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                         .setCullState(CULL)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
                         .createCompositeState(false);
-                return create("hat_entity_cutout",
+                return create("hat_entity_translucent",
                         DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
-                        1536, true, false, state);
+                        1536, true, true, state);
             });
 
     public static RenderType hatTranslucent(ResourceLocation texture)

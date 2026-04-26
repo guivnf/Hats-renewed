@@ -76,5 +76,6 @@ public class ClientEventHandler
         savedCameraType     = null;
         ClientHatCache.clear();
         HatTextureManager.clearAll();
+        me.guivnf.mods.hats.client.trade.ClientTradeState.reset();
     }
 }

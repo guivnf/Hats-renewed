@@ -382,6 +382,15 @@ public class HatsScreen extends Screen
                 0, 0,
                 SIDE_BTN_SIZE - pad * 2, SIDE_BTN_SIZE - pad * 2,
                 SIDE_BTN_SIZE - pad * 2, SIDE_BTN_SIZE - pad * 2);
+
+            if (me.guivnf.mods.hats.client.trade.ClientTradeState.hasIncomingOffers()) {
+                int bx = tradeButton.getX() + SIDE_BTN_SIZE - 8;
+                int by = tradeButton.getY() - 1;
+                g.fill(bx,     by,     bx + 9, by + 9, 0xFFAA0000);
+                g.fill(bx + 1, by + 1, bx + 8, by + 8, 0xFFFF3333);
+                g.fill(bx + 4, by + 2, bx + 5, by + 6, 0xFFFFFFFF);
+                g.fill(bx + 4, by + 7, bx + 5, by + 8, 0xFFFFFFFF);
+            }
         }
         if (sortButton != null && sortButton.visible) {
             int pad = 2;
@@ -677,6 +686,7 @@ public class HatsScreen extends Screen
 
     private void openTradeGui()
     {
+        me.guivnf.mods.hats.client.trade.ClientTradeFlow.openPartnerSelect();
     }
 
     @Override

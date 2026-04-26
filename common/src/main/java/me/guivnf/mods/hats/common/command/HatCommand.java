@@ -182,7 +182,7 @@ public final class HatCommand
                 if (parentHat == null) continue;
                 HatPart parentPart = parentHat.asHatPart(1);
                 parentPart.isShowing = false;
-                for (HatPart acc : parentPart.accessories) acc.isShowing = false;
+                parentPart.accessories.clear();
                 data.addHatToInventory(player.getUUID(), parentPart);
                 owning = findOwningHat(pd, accDef);
                 if (owning == null) continue;

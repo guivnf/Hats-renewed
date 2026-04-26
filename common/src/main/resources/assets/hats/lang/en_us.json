@@ -58,5 +58,16 @@
   "hats.placement.export": "Export",
   "hats.placement.import": "Import",
   "hats.placement.done": "Done",
-  "hats.placement.wireframe": "(wireframe)"
+  "hats.placement.wireframe": "(wireframe)",
+
+  "hats.trade.error.duplicate_offer": "You already have a pending trade offer with this player.",
+  "hats.trade.error.out_of_range": "That player is too far away to trade.",
+  "hats.trade.error.sender_hat_equipped": "You can't trade a hat you're wearing.",
+  "hats.trade.error.receiver_hat_equipped": "They're wearing that hat — they can't trade it.",
+  "hats.trade.error.sender_missing_hat": "You don't have that hat anymore.",
+  "hats.trade.error.receiver_missing_hat": "They don't have that hat anymore.",
+  "hats.trade.error.empty_offer": "Trade offer can't be empty.",
+  "hats.trade.error.receiver_offline": "That player is offline.",
+  "hats.trade.error.offer_expired": "The trade offer has expired.",
+  "hats.trade.error.offer_not_found": "Trade offer no longer exists."
 }
