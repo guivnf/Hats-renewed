@@ -8,9 +8,12 @@ architectury {
     minecraft = project.mc_version
 }
 
+def mcParts = project.mc_version.split('\\.')
+def mcMinor = mcParts.length > 1 ? mcParts[1] : project.mc_version
+
 allprojects {
     group = project.mod_group
-    version = "${project.mod_version}-mc${project.mc_version}"
+    version = "${mcMinor}.${project.mod_version}-mc${project.mc_version}"
 }
 
 subprojects {
