@@ -1,41 +1,55 @@
-Hats Mod Source Repo
-====================
+<img width="1920" height="1550" alt="New Project (11)" src="https://github.com/user-attachments/assets/ea9c46bc-2082-4af6-847b-69a5f0c5f5ba" />
 
-## Building the Mod
+***
+# Hats 🎩
 
-Publish iChunUtil to local Maven repo. Rip out it's `accesstransformer.cfg` and put it in `/src/api/resource/META-INF/` (follow the file path in `build.gradle`)
+Hats adds in more than 430+ collectible hats & accessories for players to unlock. Features rarity tiers, customizable colors, and unlockable accessories for you to tweak & change your hats to your liking. 
 
+**How to unlock hats:**<br>
+Hats are wearable cosmetics that can appear on mobs and be collected by players. When mobs spawn, a percentage of them are randomly assigned a hat, kill these mobs & collect their hats. 
 
-## Making a Hat
+**How to equip/check your hats:**<br>
+By default, you can access the Hats GUI by pressing the "H" key on your keyboard. <br><br>
 
-You will need to use Tabula. Hats adds a new button in the Toolbar for Hats, you can Make a New Hat (Hold SHIFT when in the Open Hat window) or browse hats from the hats folder there. You will see a ghost template of a Steve head. Build your hat around that.
+## Customization 🎨
 
-When you are done, take the save file from `/mods/tabula/saves/` and move it to `/mods/hats/`. You can restart the game or reload the hats in-game to load it up.
+<img width="457" height="540" alt="New Project (12)" src="https://github.com/user-attachments/assets/5f934ba3-af72-48f3-8bba-bc389c2dca07" align="right"/><br>
+<br><br><br>
+Browse hundreds of unique hats, unlock increasingly rare designs, and manage everything through a dedicated, user-friendly interface. Whether you're collecting everything or just looking for the perfect style, the system scales with your progression.
+From this interface, you can:
 
-Hats also supports additional metadata (In Tabula: Edit Project -> Edit Metadata):
+* Browse your entire collection
+* Equip and unequip hats instantly
+* Customize colors and visual properties
+* Search and sort hats for easier navigation
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
-| Meta Tag                              | Description |
-| --------------------------------- | ----------- |
-| `hats-rarity`                     |  Forces a rarity onto the Hat. Allows `common`, `uncommon`, `rare`, `epic`, `legendary`.           |
-| `hats-pool`                       |  Forces the Hat to use a specific Hat Pool. Use the same pool as other Hats to share a pool when randomly spawning.           |
-| `hats-worth`                      |  Forces a Hat to have a specific HAT value.           |
-| `hats-contributor-uuid`           |  Legacy code: UUID for past contributors to the Hats mod. If your UUID matches one of the Hats, you get one for free.           |
-| `hats-contributor-mini-me`        |  Legacy code: Other than a tag, this is not used.           |
-| `hats-accessory`                  |  Defines that this Hat is an accessory of another Hat file. Use file names (without extension).           |
-| `hats-accessory-layer`            |  Conflict layers. Two accessories conflict if they have the same layer. Supports multiple layers.           |
-| `hats-accessory-parent`           |  Defines that this Hat is an accessory of another accessory of a Hat. Use file nemes (without extension) as well.           |
-| `hats-accessory-hide-parent-part` |  Hides a parent's (either the accessory or the base Hat) part. See Pig and SuperPig for example. Supports multiples.           |
-| `hats-description`                |  Hat description to put in the Hat Tooltip.           |
-
-Separate the Meta Tag and the value with a `:`. Example: `hats-rarity:uncommon`, or `hats-description:Just a simple Farmer's Hat`.
+## Accessories 🧩
+<img width="1920" height="1080" alt="New Project (13)" src="https://github.com/user-attachments/assets/b892cb5b-5010-40d3-a216-38b20adda171" />
 
 
-## Supporting Mod Mobs
+***
 
-You will also need Tabula. If you are able to, open the mod mob model from the `Import From Minecraft` button in the Toolbar. Some mods may not be supported and will not show up, or will be a blank project.
+**Current Features:**<br>
+* All legacy hats & accesories from the original Hats mod.
+* Hat tweaking controls (Color tweaking, transparency tweaking, hat searching & sorting options)
+* Trading (fully interactible UI for trading)
+* Hat Launcher (launch your hats away!)
+* New hats with different accesories
 
-Click on the Head model piece and click on the `Export Project` button and click `Head Info JSON`. Adjust the values to get the Googly Eyes and the Half Slab to appear properly. Generally the Googly Eyes are meant to cover/overlap the eyes, and the half slab should cover the widest part of the head, from the center.
+**Compatible with:**<br>
+* Geckolib & Azurelib mods (any mods that depend on these)
+* [Epic Fight](https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod)
+* PlayerAnimator Library mods (such as BetterCombat)
 
-To disable Hats or Googly Eyes support, `Disable Hat Info` or `Disable Eye Info`.
+***
 
-Once exported, you can find the JSON file in `/mods/tabula/export/`.
+## Important Notice
+
+This is the 1.20+ port of Hats, originally made by iChun for Forge 1.6.2-1.16.5. 
+
+The original project is licensed under LGPL. Development of the original mod stopped in 2023, and this version continues the project for modern versions of the game, with support for Forge, NeoForge, and Fabric in 1.20+. This version isn't a 1:1 port of the old mod, i've taken the core idea of the mod, and re-made it in a way that's easier to maintain & create on top of. Some of the ideas like Hat Trading were also implemented into this port & i've removed some things that i deemed unecessary like the point system. 
+
+Credit goes to [iChun](https://www.curseforge.com/members/ichun/projects) for the original concept and implementation. If you enjoy this mod, consider supporting his other work ❤️.
+
+***
