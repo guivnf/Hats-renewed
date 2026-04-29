@@ -7,21 +7,22 @@ import me.guivnf.mods.hats.common.trade.TradeErrorType;
 import me.guivnf.mods.hats.common.trade.TradeOfferStore;
 import me.guivnf.mods.hats.common.world.HatsSavedData;
 import me.guivnf.mods.hats.common.world.PlayerHatData;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
 public class PacketRequestPeerInventory
 {
-    public static FriendlyByteBuf encode(UUID targetUuid)
+    public static RegistryFriendlyByteBuf encode(UUID targetUuid)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeUUID(targetUuid);
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID targetUuid = buf.readUUID();
 

@@ -1,4 +1,4 @@
-package me.guivnf.mods.hats.forge.mixin;
+package me.guivnf.mods.hats.neoforge.mixin;
 
 import me.guivnf.mods.hats.client.render.LayerHat;
 import net.minecraft.client.model.EntityModel;

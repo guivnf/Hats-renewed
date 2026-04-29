@@ -22,8 +22,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.level.Level;
 
 import java.util.UUID;
@@ -35,7 +35,7 @@ public class ServerEventHandler
         EntityEvent.LIVING_DEATH.register(ServerEventHandler::onEntityDeath);
         EntityEvent.ADD.register(ServerEventHandler::onEntityAdd);
         PlayerEvent.PLAYER_JOIN.register(ServerEventHandler::onPlayerJoin);
-        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> onPlayerRespawn(player));
+        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd, removalReason) -> onPlayerRespawn(player));
 
         TickEvent.SERVER_LEVEL_POST.register(ServerEventHandler::onServerLevelTick);
         TickEvent.SERVER_POST.register(ServerEventHandler::onServerTick);
@@ -110,7 +110,7 @@ public class ServerEventHandler
         for (UUID uuid : data.getAllEntityHats().keySet()) {
             Entity ent = level.getEntity(uuid);
             if (!(ent instanceof LivingEntity living)) continue;
-            if (living.getMobType() != MobType.UNDEAD) continue;
+            if (!living.getType().is(EntityTypeTags.UNDEAD)) continue;
             if (!living.isOnFire()) continue;
             if (living.isInWaterRainOrBubble() || living.isInPowderSnow) continue;
             net.minecraft.core.BlockPos eyePos = net.minecraft.core.BlockPos.containing(

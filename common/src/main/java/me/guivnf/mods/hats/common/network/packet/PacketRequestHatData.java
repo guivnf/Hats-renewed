@@ -4,7 +4,8 @@ import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.common.hat.HatDefinition;
 import me.guivnf.mods.hats.common.hat.HatRegistry;
 import me.guivnf.mods.hats.common.network.HatsNetwork;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -14,9 +15,9 @@ public class PacketRequestHatData
 {
     private static final int FRAGMENT_SIZE = 32_768;
 
-    public static FriendlyByteBuf encode(List<String> hatNames)
+    public static RegistryFriendlyByteBuf encode(List<String> hatNames)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeInt(hatNames.size());
         for (String name : hatNames) {
             buf.writeUtf(name);
@@ -24,7 +25,7 @@ public class PacketRequestHatData
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         int count = buf.readInt();
         List<String> requested = new ArrayList<>(count);
@@ -53,7 +54,7 @@ public class PacketRequestHatData
             int to = Math.min(from + FRAGMENT_SIZE, texture.length);
             byte[] chunk = java.util.Arrays.copyOfRange(texture, from, to);
 
-            FriendlyByteBuf fragmentBuf = PacketHatDataFragment.encode(
+            RegistryFriendlyByteBuf fragmentBuf = PacketHatDataFragment.encode(
                 def.name, def.pack.id, i, totalFragments, chunk,
                 i == 0 ? def.modelData : null,
                 i == 0 ? def.meta : null

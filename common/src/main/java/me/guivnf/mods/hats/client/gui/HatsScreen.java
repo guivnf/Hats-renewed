@@ -43,11 +43,11 @@ public class HatsScreen extends Screen
     @Nullable private UUID playerUuid;
 
     private static final ResourceLocation ICON_CANCEL =
-            new ResourceLocation("hats", "textures/icon/cancel.png");
+            ResourceLocation.fromNamespaceAndPath("hats", "textures/icon/cancel.png");
     private static final ResourceLocation ICON_SORT =
-            new ResourceLocation("hats", "textures/icon/categories.png");
+            ResourceLocation.fromNamespaceAndPath("hats", "textures/icon/categories.png");
     private static final ResourceLocation ICON_TRADE =
-            new ResourceLocation("hats", "textures/icon/trade.png");
+            ResourceLocation.fromNamespaceAndPath("hats", "textures/icon/trade.png");
 
     private static final int SORT_ALPHA       = 0;
     private static final int SORT_RARITY      = 1;
@@ -529,7 +529,7 @@ public class HatsScreen extends Screen
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double delta)
     {
         if (isInPreviewArea(mouseX)) {
             ClientEventHandler.guiZoom = Mth.clamp(
@@ -538,10 +538,10 @@ public class HatsScreen extends Screen
         }
 
         if (hatGrid != null && hatGrid.isMouseOver(mouseX, mouseY)) {
-            return hatGrid.mouseScrolled(mouseX, mouseY, delta);
+            return hatGrid.mouseScrolled(mouseX, mouseY, scrollX, delta);
         }
 
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, delta);
     }
 
     @Override
@@ -687,6 +687,24 @@ public class HatsScreen extends Screen
     private void openTradeGui()
     {
         me.guivnf.mods.hats.client.trade.ClientTradeFlow.openPartnerSelect();
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick)
+    {
+        // disable 1.21+ menu-blur effect over the world
+    }
+
+    @Override
+    public void renderTransparentBackground(GuiGraphics g)
+    {
+        // skip the dark world darkening on the H-key screen; let the world show through
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics g)
+    {
+        // skip the in-world dark dirt-pattern overlay
     }
 
     @Override

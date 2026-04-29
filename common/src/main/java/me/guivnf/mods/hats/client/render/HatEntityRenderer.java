@@ -49,6 +49,6 @@ public class HatEntityRenderer extends EntityRenderer<HatEntity>
     @Override
     public ResourceLocation getTextureLocation(HatEntity entity)
     {
-        return new ResourceLocation("hats", "textures/entity/hat.png");
+        return ResourceLocation.fromNamespaceAndPath("hats", "textures/entity/hat.png");
     }
 }

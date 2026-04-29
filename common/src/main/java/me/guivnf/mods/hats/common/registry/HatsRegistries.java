@@ -37,13 +37,13 @@ public class HatsRegistries
             ITEMS.register("hat_launcher", () -> new HatLauncherItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistrySupplier<SoundEvent> POOF =
-            SOUND_EVENTS.register("poof", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(HatsMod.MOD_ID, "poof")));
+            SOUND_EVENTS.register("poof", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(HatsMod.MOD_ID, "poof")));
 
     public static final RegistrySupplier<SoundEvent> TUBE =
-            SOUND_EVENTS.register("tube", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(HatsMod.MOD_ID, "tube")));
+            SOUND_EVENTS.register("tube", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(HatsMod.MOD_ID, "tube")));
 
     public static final RegistrySupplier<SoundEvent> BONK =
-            SOUND_EVENTS.register("bonk", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(HatsMod.MOD_ID, "bonk")));
+            SOUND_EVENTS.register("bonk", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(HatsMod.MOD_ID, "bonk")));
 
     public static void register()
     {

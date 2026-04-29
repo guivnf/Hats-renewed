@@ -78,9 +78,9 @@ public class HatEntity
     }
 
     @Override
-    protected void defineSynchedData()
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder)
     {
-        entityData.define(HAT_DATA, new CompoundTag());
+        builder.define(HAT_DATA, new CompoundTag());
     }
 
     @Override

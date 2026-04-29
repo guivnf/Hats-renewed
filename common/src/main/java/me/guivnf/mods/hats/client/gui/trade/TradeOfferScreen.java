@@ -161,7 +161,7 @@ public class TradeOfferScreen
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick)
     {
-        renderBackground(g);
+        renderBackground(g, mouseX, mouseY, partialTick);
 
         TradeErrorType err = ClientTradeState.consumeError();
         if (err != null) handleError(err);
@@ -830,9 +830,9 @@ public class TradeOfferScreen
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double delta)
     {
-        if (configuringHat != null) return super.mouseScrolled(mouseX, mouseY, delta);
+        if (configuringHat != null) return super.mouseScrolled(mouseX, mouseY, scrollX, delta);
         int gridContentW = GRID_W - SCROLL_W;
         if (mouseX >= leftGridX && mouseX < leftGridX + gridContentW
                 && mouseY >= gridY && mouseY < gridY + GRID_H) {
@@ -850,7 +850,19 @@ public class TradeOfferScreen
             rightScroll = (int) Math.max(0, Math.min(max, rightScroll - delta * 12));
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, delta);
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick)
+    {
+        // disable 1.21+ menu-blur effect over the world
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics g)
+    {
+        // skip the in-world dark dirt-pattern overlay
     }
 
     @Override

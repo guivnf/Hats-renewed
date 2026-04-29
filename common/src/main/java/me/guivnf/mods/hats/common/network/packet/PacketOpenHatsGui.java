@@ -3,16 +3,17 @@ package me.guivnf.mods.hats.common.network.packet;
 import dev.architectury.networking.NetworkManager;
 
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 public class PacketOpenHatsGui
 {
-    public static FriendlyByteBuf encode()
+    public static RegistryFriendlyByteBuf encode()
     {
-        return new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        return new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         context.queue(PacketOpenHatsGui::handleClient);
     }

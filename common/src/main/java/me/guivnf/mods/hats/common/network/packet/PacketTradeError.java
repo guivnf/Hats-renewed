@@ -2,24 +2,25 @@ package me.guivnf.mods.hats.common.network.packet;
 
 import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.common.trade.TradeErrorType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 public class PacketTradeError
 {
-    public static FriendlyByteBuf encode(TradeErrorType type)
+    public static RegistryFriendlyByteBuf encode(TradeErrorType type)
     {
         return encode(type, "");
     }
 
-    public static FriendlyByteBuf encode(TradeErrorType type, String details)
+    public static RegistryFriendlyByteBuf encode(TradeErrorType type, String details)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeEnum(type);
         buf.writeUtf(details == null ? "" : details);
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         TradeErrorType type = buf.readEnum(TradeErrorType.class);
         String details = buf.readUtf();

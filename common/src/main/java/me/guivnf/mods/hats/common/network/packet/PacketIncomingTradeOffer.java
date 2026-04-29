@@ -4,7 +4,8 @@ import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.common.hat.HatPart;
 import me.guivnf.mods.hats.common.trade.TradeOffer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,9 @@ import java.util.UUID;
 
 public class PacketIncomingTradeOffer
 {
-    public static FriendlyByteBuf encode(TradeOffer offer)
+    public static RegistryFriendlyByteBuf encode(TradeOffer offer)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeUUID(offer.offerId);
         buf.writeUUID(offer.senderUuid);
         buf.writeUtf(offer.senderName);
@@ -26,7 +27,7 @@ public class PacketIncomingTradeOffer
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID offerId = buf.readUUID();
         UUID senderUuid = buf.readUUID();

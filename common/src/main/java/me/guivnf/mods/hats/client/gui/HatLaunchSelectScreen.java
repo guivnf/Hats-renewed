@@ -97,7 +97,7 @@ public class HatLaunchSelectScreen extends Screen
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double delta)
     {
         if (launchable.size() <= MAX_VISIBLE_HAT_ROWS) return false;
         int newOffset = scrollOffset - (int) Math.signum(delta);
@@ -124,7 +124,7 @@ public class HatLaunchSelectScreen extends Screen
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partial)
     {
-        renderBackground(g);
+        renderBackground(g, mouseX, mouseY, partial);
 
         int panelW  = BTN_W + PAD * 2;
         int startX  = (width  - panelW) / 2;
@@ -147,6 +147,18 @@ public class HatLaunchSelectScreen extends Screen
         }
 
         super.render(g, mouseX, mouseY, partial);
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick)
+    {
+        // disable 1.21+ menu-blur effect over the world
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics g)
+    {
+        // skip the in-world dark dirt-pattern overlay
     }
 
     @Override

@@ -3,7 +3,8 @@ package me.guivnf.mods.hats.common.network.packet;
 import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.common.hat.HatPart;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
@@ -12,9 +13,9 @@ import java.util.UUID;
 
 public class PacketPeerInventory
 {
-    public static FriendlyByteBuf encode(UUID owner, @Nullable HatPart equipped, List<HatPart> inventory)
+    public static RegistryFriendlyByteBuf encode(UUID owner, @Nullable HatPart equipped, List<HatPart> inventory)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeUUID(owner);
         buf.writeBoolean(equipped != null);
         if (equipped != null) buf.writeNbt(equipped.save());
@@ -23,7 +24,7 @@ public class PacketPeerInventory
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID owner = buf.readUUID();
         HatPart equipped = null;

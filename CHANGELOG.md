@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## 20.1.0 - 2026-04-27
+## 21.1.0 - 2026-04-29
 
 ### Added
   - Trading
-  - Around 22 new hats and plnety more accesories.
-  - Support for multiloader(Forge/Fabric)
-  - Ported to 1.20.1
+  - Around 22 new hats and plenty more accesories.
+  - Support for multiloader(NeoForge/Fabric)
+  - Ported to 1.21.1
 
 
 

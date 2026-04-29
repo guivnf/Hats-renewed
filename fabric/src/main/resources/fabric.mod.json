@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "hats",
   "version": "${version}",
-  "name": "Hats",
+  "name": "HatsRenewed",
   "description": "Put a hat on it.",
   "authors": ["iChun", "guivnf"],
   "license": "LGPL",
@@ -19,7 +19,7 @@
   "depends": {
     "fabricloader": ">=0.15",
     "fabric-api": "*",
-    "architectury": ">=9",
-    "minecraft": "~1.20.1"
+    "architectury": ">=13",
+    "minecraft": "~1.21.1"
   }
 }

@@ -1,7 +1,8 @@
 package me.guivnf.mods.hats.common.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -12,9 +13,9 @@ public class PacketNearbyPlayersList
 {
     public record Entry(UUID uuid, String name) {}
 
-    public static FriendlyByteBuf encode(List<ServerPlayer> players)
+    public static RegistryFriendlyByteBuf encode(List<ServerPlayer> players)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeInt(players.size());
         for (ServerPlayer p : players) {
             buf.writeUUID(p.getUUID());
@@ -23,7 +24,7 @@ public class PacketNearbyPlayersList
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         int n = buf.readInt();
         List<Entry> entries = new ArrayList<>(n);

@@ -5,17 +5,18 @@ import me.guivnf.mods.hats.common.hat.HatDefinition;
 import me.guivnf.mods.hats.common.hat.HatRegistry;
 
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 import java.security.MessageDigest;
 import java.util.*;
 
 public class PacketHatManifest
 {
-    public static FriendlyByteBuf encode()
+    public static RegistryFriendlyByteBuf encode()
     {
         Collection<HatDefinition> all = HatRegistry.getAll();
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         List<HatDefinition> mainHats = all.stream().filter(h -> !h.isAccessory()).toList();
         buf.writeInt(mainHats.size());
         for (HatDefinition hat : mainHats) {
@@ -26,7 +27,7 @@ public class PacketHatManifest
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         int count = buf.readInt();
         Map<String, ManifestEntry> entries = new LinkedHashMap<>(count);

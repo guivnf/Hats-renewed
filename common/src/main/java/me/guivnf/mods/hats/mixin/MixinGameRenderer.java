@@ -23,8 +23,8 @@ public abstract class MixinGameRenderer {
         cir.setReturnValue(100.0);
     }
 
-    @Inject(method = "render(FJZ)V", at = @At("HEAD"))
-    private void hats$resetFrameCounter(float partialTick, long nanoTime, boolean renderLevel, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("HEAD"))
+    private void hats$resetFrameCounter(net.minecraft.client.DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         me.guivnf.mods.hats.client.render.LayerHat.resetFrameCounter();
     }
 }

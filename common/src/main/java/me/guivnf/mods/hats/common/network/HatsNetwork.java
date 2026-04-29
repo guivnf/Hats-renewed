@@ -1,6 +1,8 @@
 package me.guivnf.mods.hats.common.network;
 
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import me.guivnf.mods.hats.HatsMod;
 import me.guivnf.mods.hats.common.network.packet.*;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +45,28 @@ public class HatsNetwork
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SEND_TRADE_OFFER,       PacketSendTradeOffer::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, RESPOND_TRADE_OFFER,    PacketRespondTradeOffer::handle);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, CLOSE_TRADE_BUILDER,    PacketCloseTradeBuilder::handle);
+
+        // On a dedicated server we can't call registerReceiver(Side.S2C, ...) — that path
+        // routes through ClientPlayNetworking which is @Environment(CLIENT)-stripped on the
+        // server (AbstractMethodError). Instead we register the S2C payload TYPE only, so the
+        // server can encode and send these packets to clients. The actual receiver lambdas
+        // are wired up on the client by registerClient().
+        if (Platform.getEnvironment() == Env.SERVER) {
+            NetworkManager.registerS2CPayloadType(SYNC_ENTITY_HAT);
+            NetworkManager.registerS2CPayloadType(SYNC_PLAYER_INVENTORY);
+            NetworkManager.registerS2CPayloadType(HAT_MANIFEST);
+            NetworkManager.registerS2CPayloadType(HAT_DATA_FRAGMENT);
+            NetworkManager.registerS2CPayloadType(OPEN_HATS_GUI);
+            NetworkManager.registerS2CPayloadType(NEW_HAT_TOAST);
+
+            NetworkManager.registerS2CPayloadType(NEARBY_PLAYERS_LIST);
+            NetworkManager.registerS2CPayloadType(PEER_INVENTORY);
+            NetworkManager.registerS2CPayloadType(INCOMING_TRADE_OFFER);
+            NetworkManager.registerS2CPayloadType(TRADE_RESOLVED);
+            NetworkManager.registerS2CPayloadType(TRADE_OFFER_REVOKED);
+            NetworkManager.registerS2CPayloadType(TRADE_PARTNER_LEFT);
+            NetworkManager.registerS2CPayloadType(TRADE_ERROR);
+        }
     }
 
     public static void registerClient()
@@ -65,6 +89,6 @@ public class HatsNetwork
 
     private static ResourceLocation id(String path)
     {
-        return new ResourceLocation(HatsMod.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(HatsMod.MOD_ID, path);
     }
 }

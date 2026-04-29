@@ -2,7 +2,6 @@ package me.guivnf.mods.hats.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class CubeRenderer
@@ -15,8 +14,8 @@ public class CubeRenderer
             int light, int overlay, float r, float g, float b, float a,
             boolean mirror, boolean flatX, boolean flatY, boolean flatZ, boolean swapYFaceUV)
     {
-        Matrix4f pose = poseStack.last().pose();
-        Matrix3f normal = poseStack.last().normal();
+        PoseStack.Pose poseRef = poseStack.last();
+        Matrix4f pose = poseRef.pose();
 
         float dX = dimX;
         float dY = dimY;
@@ -78,51 +77,51 @@ public class CubeRenderer
         if (flatY) {
             if (swapYFaceUV) {
                 // GEO_JSON flat Y: use topU/V with z1→z0 winding (matches original y0 face appearance)
-                renderFace(pose, normal, consumer, x0, y1, z1, x0, y1, z0, x1, y1, z0, x1, y1, z1,
+                renderFace(pose, poseRef, consumer, x0, y1, z1, x0, y1, z0, x1, y1, z0, x1, y1, z1,
                     topU0, topV0, topU1, topV1, 0, 1, 0, light, overlay, r, g, b, a);
-                renderFace(pose, normal, consumer, x0, y0, z1, x0, y0, z0, x1, y0, z0, x1, y0, z1,
+                renderFace(pose, poseRef, consumer, x0, y0, z1, x0, y0, z0, x1, y0, z0, x1, y0, z1,
                     topU0, topV0, topU1, topV1, 0, -1, 0, light, overlay, r, g, b, a);
             } else {
                 // TBL flat Y: use bottomU/V with z0→z1 winding
-                renderFace(pose, normal, consumer, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0,
+                renderFace(pose, poseRef, consumer, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0,
                     bottomU0, bottomV0, bottomU1, bottomV1, 0, 1, 0, light, overlay, r, g, b, a);
-                renderFace(pose, normal, consumer, x0, y0, z0, x0, y0, z1, x1, y0, z1, x1, y0, z0,
+                renderFace(pose, poseRef, consumer, x0, y0, z0, x0, y0, z1, x1, y0, z1, x1, y0, z0,
                     bottomU0, bottomV0, bottomU1, bottomV1, 0, -1, 0, light, overlay, r, g, b, a);
             }
         } else {
-            renderFace(pose, normal, consumer, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0,
+            renderFace(pose, poseRef, consumer, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0,
                 bottomU0, bottomV0, bottomU1, bottomV1, 0, 1, 0, light, overlay, r, g, b, a);
-            renderFace(pose, normal, consumer, x0, y0, z1, x0, y0, z0, x1, y0, z0, x1, y0, z1,
+            renderFace(pose, poseRef, consumer, x0, y0, z1, x0, y0, z0, x1, y0, z0, x1, y0, z1,
                 topU0, topV0, topU1, topV1, 0, -1, 0, light, overlay, r, g, b, a);
         }
-        renderFace(pose, normal, consumer, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0,
+        renderFace(pose, poseRef, consumer, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0,
             frontU0, frontV0, frontU1, frontV1, 0, 0, -1, light, overlay, r, g, b, a);
         if (flatZ)
-            renderFace(pose, normal, consumer, x0, y0, z1, x0, y1, z1, x1, y1, z1, x1, y0, z1,
+            renderFace(pose, poseRef, consumer, x0, y0, z1, x0, y1, z1, x1, y1, z1, x1, y0, z1,
                 frontU0, frontV0, frontU1, frontV1, 0, 0, 1, light, overlay, r, g, b, a);
         else
-            renderFace(pose, normal, consumer, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1,
+            renderFace(pose, poseRef, consumer, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1,
                 backU0, backV0, backU1, backV1, 0, 0, 1, light, overlay, r, g, b, a);
-        renderFace(pose, normal, consumer, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0,
+        renderFace(pose, poseRef, consumer, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0,
             rightU0, rightV0, rightU1, rightV1, -1, 0, 0, light, overlay, r, g, b, a);
         if (flatX)
-            renderFace(pose, normal, consumer, x1, y0, z1, x1, y1, z1, x1, y1, z0, x1, y0, z0,
+            renderFace(pose, poseRef, consumer, x1, y0, z1, x1, y1, z1, x1, y1, z0, x1, y0, z0,
                 rightU0, rightV0, rightU1, rightV1, 1, 0, 0, light, overlay, r, g, b, a);
         else
-            renderFace(pose, normal, consumer, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1,
+            renderFace(pose, poseRef, consumer, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1,
                 leftU0, leftV0, leftU1, leftV1, 1, 0, 0, light, overlay, r, g, b, a);
     }
 
-    private static void renderFace(Matrix4f pose, Matrix3f normal, VertexConsumer consumer,
+    private static void renderFace(Matrix4f pose, PoseStack.Pose poseRef, VertexConsumer consumer,
             float ax, float ay, float az, float bx, float by, float bz,
             float cx, float cy, float cz, float dx, float dy, float dz,
             float u0, float v0, float u1, float v1,
             float nx, float ny, float nz,
             int light, int overlay, float r, float g, float b, float a)
     {
-        consumer.vertex(pose, ax, ay, az).color(r, g, b, a).uv(u0, v0).overlayCoords(overlay).uv2(light).normal(normal, nx, ny, nz).endVertex();
-        consumer.vertex(pose, bx, by, bz).color(r, g, b, a).uv(u0, v1).overlayCoords(overlay).uv2(light).normal(normal, nx, ny, nz).endVertex();
-        consumer.vertex(pose, cx, cy, cz).color(r, g, b, a).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, nx, ny, nz).endVertex();
-        consumer.vertex(pose, dx, dy, dz).color(r, g, b, a).uv(u1, v0).overlayCoords(overlay).uv2(light).normal(normal, nx, ny, nz).endVertex();
+        consumer.addVertex(pose, ax, ay, az).setColor(r, g, b, a).setUv(u0, v0).setOverlay(overlay).setLight(light).setNormal(poseRef, nx, ny, nz);
+        consumer.addVertex(pose, bx, by, bz).setColor(r, g, b, a).setUv(u0, v1).setOverlay(overlay).setLight(light).setNormal(poseRef, nx, ny, nz);
+        consumer.addVertex(pose, cx, cy, cz).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(poseRef, nx, ny, nz);
+        consumer.addVertex(pose, dx, dy, dz).setColor(r, g, b, a).setUv(u1, v0).setOverlay(overlay).setLight(light).setNormal(poseRef, nx, ny, nz);
     }
 }

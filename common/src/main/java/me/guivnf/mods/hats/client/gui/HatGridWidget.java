@@ -320,7 +320,7 @@ public class HatGridWidget implements GuiEventListener, NarratableEntry {
         g.enableScissor(cx + 1, cy + 1, cx + contentW - 1, cy + CELL_H - 1);
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(true);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = true;
-        InventoryScreen.renderEntityInInventory(g, centerX, footY, 42, cam, entity, player);
+        InventoryScreen.renderEntityInInventory(g, centerX, footY, 42, new org.joml.Vector3f(), cam, entity, player);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = false;
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(false);
         g.disableScissor();
@@ -533,7 +533,7 @@ public class HatGridWidget implements GuiEventListener, NarratableEntry {
         g.enableScissor(cx + 1, cy + 1, cx + cw - STRIP_W - 1, cy + ch - 1);
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(true);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = true;
-        InventoryScreen.renderEntityInInventory(g, cx + (cw - STRIP_W) / 2, cy + ch - 4, scale, cam, entity, player);
+        InventoryScreen.renderEntityInInventory(g, cx + (cw - STRIP_W) / 2, cy + ch - 4, scale, new org.joml.Vector3f(), cam, entity, player);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = false;
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(false);
         g.disableScissor();
@@ -885,7 +885,7 @@ public class HatGridWidget implements GuiEventListener, NarratableEntry {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double delta) {
         if (!visible || !isMouseOver(mouseX, mouseY))
             return false;
         if (inAccessoryView) {

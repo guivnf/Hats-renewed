@@ -5,19 +5,20 @@ import me.guivnf.mods.hats.common.hat.HatPart;
 
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 public class PacketNewHatToast
 {
-    public static FriendlyByteBuf encode(HatPart hat, boolean isAccessory)
+    public static RegistryFriendlyByteBuf encode(HatPart hat, boolean isAccessory)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeNbt(hat.save());
         buf.writeBoolean(isAccessory);
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         CompoundTag tag = buf.readNbt();
         HatPart hat = tag != null ? HatPart.load(tag) : null;

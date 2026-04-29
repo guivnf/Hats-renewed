@@ -4,14 +4,15 @@ import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.common.hat.HatPart;
 import me.guivnf.mods.hats.common.world.HatsSavedData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PacketHatCustomisation
 {
-    public static FriendlyByteBuf encode(HatPart hat)
+    public static RegistryFriendlyByteBuf encode(HatPart hat)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeBoolean(hat != null);
         if (hat != null) {
             buf.writeNbt(hat.save());
@@ -19,7 +20,7 @@ public class PacketHatCustomisation
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         HatPart hat = null;
         if (buf.readBoolean()) {

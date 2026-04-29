@@ -6,20 +6,21 @@ import me.guivnf.mods.hats.common.hat.HatPart;
 import me.guivnf.mods.hats.common.hat.HatRegistry;
 import me.guivnf.mods.hats.common.network.NetworkHelper;
 import me.guivnf.mods.hats.common.world.HatsSavedData;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 public class PacketGiveHat
 {
-    public static FriendlyByteBuf encode(String hatName, String targetPlayerName)
+    public static RegistryFriendlyByteBuf encode(String hatName, String targetPlayerName)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeUtf(hatName);
         buf.writeUtf(targetPlayerName);
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         String hatName = buf.readUtf();
         String targetName = buf.readUtf();

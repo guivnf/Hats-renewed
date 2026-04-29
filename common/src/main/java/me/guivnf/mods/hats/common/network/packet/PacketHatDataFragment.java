@@ -6,7 +6,8 @@ import me.guivnf.mods.hats.HatsMod;
 import me.guivnf.mods.hats.common.hat.*;
 
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 import org.jetbrains.annotations.Nullable;
 import java.nio.charset.StandardCharsets;
@@ -16,14 +17,14 @@ public class PacketHatDataFragment
 {
     private static final Gson GSON = new Gson();
 
-    public static FriendlyByteBuf encode(
+    public static RegistryFriendlyByteBuf encode(
             String hatName, String packId,
             int fragmentIndex, int totalFragments,
             byte[] textureChunk,
             @Nullable HatModelData model,
             @Nullable HatMeta meta)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeUtf(hatName);
         buf.writeUtf(packId);
         buf.writeInt(fragmentIndex);
@@ -43,7 +44,7 @@ public class PacketHatDataFragment
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         String hatName = buf.readUtf();
         String packId = buf.readUtf();

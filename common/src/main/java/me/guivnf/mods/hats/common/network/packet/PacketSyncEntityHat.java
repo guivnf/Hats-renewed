@@ -7,16 +7,17 @@ import me.guivnf.mods.hats.common.hat.HatPart;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 
 public class PacketSyncEntityHat
 {
-    public static FriendlyByteBuf encode(UUID entityUuid, HatPart hat)
+    public static RegistryFriendlyByteBuf encode(UUID entityUuid, HatPart hat)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeUUID(entityUuid);
         buf.writeBoolean(hat != null);
         if (hat != null) {
@@ -25,7 +26,7 @@ public class PacketSyncEntityHat
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID entityUuid = buf.readUUID();
         boolean hasHat = buf.readBoolean();

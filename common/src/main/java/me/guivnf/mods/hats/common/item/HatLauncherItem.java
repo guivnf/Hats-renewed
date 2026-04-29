@@ -45,19 +45,20 @@ public class HatLauncherItem
     @Nullable
     public static me.guivnf.mods.hats.common.hat.HatPart getStoredHat(ItemStack stack)
     {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains(HAT_PART_TAG)) return null;
+        net.minecraft.world.item.component.CustomData custom =
+            stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        if (custom == null) return null;
+        CompoundTag tag = custom.copyTag();
+        if (!tag.contains(HAT_PART_TAG)) return null;
         return me.guivnf.mods.hats.common.hat.HatPart.load(tag.getCompound(HAT_PART_TAG));
     }
 
     public static void storeHat(ItemStack stack, @Nullable me.guivnf.mods.hats.common.hat.HatPart hat)
     {
-        if (hat == null) {
-            if (stack.hasTag()) {
-                stack.getOrCreateTag().remove(HAT_PART_TAG);
-            }
-            return;
-        }
-        stack.getOrCreateTag().put(HAT_PART_TAG, hat.save());
+        net.minecraft.world.item.component.CustomData.update(
+            net.minecraft.core.component.DataComponents.CUSTOM_DATA, stack, tag -> {
+                if (hat == null) tag.remove(HAT_PART_TAG);
+                else tag.put(HAT_PART_TAG, hat.save());
+            });
     }
 }

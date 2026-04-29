@@ -81,7 +81,7 @@ public class TradeIncomingScreen
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick)
     {
-        renderBackground(g);
+        renderBackground(g, mouseX, mouseY, partialTick);
 
         g.fill(x - 1, y - 1, x + W + 1, y + H + 1, 0xFF555555);
         g.fill(x,     y,     x + W,     y + H,     0xFFC6C6C6);
@@ -222,7 +222,7 @@ public class TradeIncomingScreen
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double delta)
     {
         int colW = (W - 18) / 2;
         int leftX  = x + 6;
@@ -240,7 +240,7 @@ public class TradeIncomingScreen
                 return true;
             }
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, delta);
     }
 
     private int clampScroll(int proposed, int hatCount, int cw, int rowsH)
@@ -250,6 +250,18 @@ public class TradeIncomingScreen
         int contentH  = totalRows * ROW_H + 6;
         int max = Math.max(0, contentH - rowsH);
         return Math.max(0, Math.min(max, proposed));
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick)
+    {
+        // disable 1.21+ menu-blur effect over the world
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics g)
+    {
+        // skip the in-world dark dirt-pattern overlay
     }
 
     @Override

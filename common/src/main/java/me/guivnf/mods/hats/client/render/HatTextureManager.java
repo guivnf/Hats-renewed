@@ -66,7 +66,7 @@ public class HatTextureManager
             }
 
             DynamicTexture dynamicTexture = new DynamicTexture(image);
-            ResourceLocation location = new ResourceLocation(HatsMod.MOD_ID, "dynamic/" + key.hashCode());
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(HatsMod.MOD_ID, "dynamic/" + key.hashCode());
             Minecraft.getInstance().getTextureManager().register(location, dynamicTexture);
             return location;
         } catch (Exception e) {

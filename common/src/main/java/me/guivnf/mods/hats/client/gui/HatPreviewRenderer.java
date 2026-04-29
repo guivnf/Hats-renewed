@@ -47,7 +47,7 @@ public final class HatPreviewRenderer
         g.enableScissor(scissorX1, scissorY1, scissorX2, scissorY2);
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(true);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = true;
-        InventoryScreen.renderEntityInInventory(g, centerX, footY, scale, cam, entity, player);
+        InventoryScreen.renderEntityInInventory(g, centerX, footY, scale, new org.joml.Vector3f(), cam, entity, player);
         EpicFightCompat.GUI_PREVIEW_ACTIVE = false;
         LayerHat.RENDERING_HAT_GUI_PREVIEW.set(false);
         g.disableScissor();

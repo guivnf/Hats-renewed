@@ -14,7 +14,7 @@ public class HatPlacementJsonLoader
 
     public static Path getPlacementDir()
     {
-        return HatsMod.configDirectory.resolve("entity_placement");
+        return HatsMod.configDirectory.resolve("hat_placement");
     }
 
     private static Path fileFor(ResourceLocation id)
@@ -25,9 +25,23 @@ public class HatPlacementJsonLoader
 
     public static void load()
     {
+        migrateLegacyDir();
         loadBuiltIn();
         loadConfigDir();
         migrateLegacy();
+    }
+
+    private static void migrateLegacyDir()
+    {
+        Path oldDir = HatsMod.configDirectory.resolve("entity_placement");
+        Path newDir = getPlacementDir();
+        if (!Files.isDirectory(oldDir) || Files.exists(newDir)) return;
+        try {
+            Files.move(oldDir, newDir);
+            HatsMod.LOGGER.info("[Hats] Migrated placement dir {} -> {}", oldDir, newDir);
+        } catch (IOException e) {
+            HatsMod.LOGGER.warn("[Hats] Could not rename legacy placement dir: {}", e.getMessage());
+        }
     }
 
     public static void saveOne(ResourceLocation id, HatPlacementInfo info)

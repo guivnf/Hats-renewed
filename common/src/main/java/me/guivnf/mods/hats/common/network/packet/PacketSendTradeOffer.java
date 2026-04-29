@@ -9,7 +9,8 @@ import me.guivnf.mods.hats.common.trade.TradeOfferStore;
 import me.guivnf.mods.hats.common.world.HatsSavedData;
 import me.guivnf.mods.hats.common.world.PlayerHatData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ import java.util.UUID;
 
 public class PacketSendTradeOffer
 {
-    public static FriendlyByteBuf encode(UUID receiverUuid, List<HatPart> senderHats, List<HatPart> receiverHats)
+    public static RegistryFriendlyByteBuf encode(UUID receiverUuid, List<HatPart> senderHats, List<HatPart> receiverHats)
     {
-        FriendlyByteBuf buf = new FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), RegistryAccess.EMPTY);
         buf.writeUUID(receiverUuid);
         buf.writeInt(senderHats.size());
         for (HatPart h : senderHats) buf.writeNbt(h.save());
@@ -29,7 +30,7 @@ public class PacketSendTradeOffer
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID receiverUuid = buf.readUUID();
         int sn = buf.readInt();

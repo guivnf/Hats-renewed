@@ -26,11 +26,14 @@ public class HatsSavedData
 
     private static final Random RAND = new Random();
 
+    private static final SavedData.Factory<HatsSavedData> FACTORY =
+        new SavedData.Factory<>(HatsSavedData::new, HatsSavedData::load, null);
+
     public static HatsSavedData get(net.minecraft.world.level.Level level)
     {
         if (level instanceof ServerLevel serverLevel) {
             return serverLevel.getServer().overworld().getDataStorage()
-                    .computeIfAbsent(HatsSavedData::load, HatsSavedData::new, DATA_NAME);
+                    .computeIfAbsent(FACTORY, DATA_NAME);
         }
         throw new IllegalStateException("HatsSavedData accessed on the wrong side");
     }
@@ -200,7 +203,7 @@ public class HatsSavedData
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag)
+    public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider provider)
     {
         ListTag players = new ListTag();
         for (PlayerHatData data : playerData.values()) {
@@ -220,7 +223,7 @@ public class HatsSavedData
         return tag;
     }
 
-    public static HatsSavedData load(CompoundTag tag)
+    public static HatsSavedData load(CompoundTag tag, net.minecraft.core.HolderLookup.Provider provider)
     {
         HatsSavedData data = new HatsSavedData();
 

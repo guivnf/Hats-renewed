@@ -6,7 +6,8 @@ import me.guivnf.mods.hats.common.world.PlayerHatData;
 
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.UUID;
 
 public class PacketSyncPlayerInventory
 {
-    public static FriendlyByteBuf encode(PlayerHatData data)
+    public static RegistryFriendlyByteBuf encode(PlayerHatData data)
     {
-        FriendlyByteBuf buf = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+        RegistryFriendlyByteBuf buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), net.minecraft.core.RegistryAccess.EMPTY);
         buf.writeUUID(data.owner);
         buf.writeInt(data.tokens);
 
@@ -33,7 +34,7 @@ public class PacketSyncPlayerInventory
         return buf;
     }
 
-    public static void handle(FriendlyByteBuf buf, NetworkManager.PacketContext context)
+    public static void handle(RegistryFriendlyByteBuf buf, NetworkManager.PacketContext context)
     {
         UUID owner = buf.readUUID();
         int tokens = buf.readInt();

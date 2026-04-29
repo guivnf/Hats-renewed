@@ -138,8 +138,19 @@ public class HatPlacementScreen extends Screen
             .bounds(px, py + BTN_H + FIELD_PAD, pw, BTN_H).build());
     }
 
+    private void persistCurrent()
+    {
+        if (previewEntity == null) return;
+        applyToRegistry();
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(previewEntity.getType());
+        if (id != null) {
+            HatPlacementJsonLoader.saveOne(id, HatPlacementRegistry.get(previewEntity));
+        }
+    }
+
     private void spawnPreviewEntity()
     {
+        persistCurrent();
         previewEntity = null;
         if (entityIds.isEmpty() || minecraft.level == null) return;
         ResourceLocation id = entityIds.get(selectedEntityIndex);
@@ -184,7 +195,7 @@ public class HatPlacementScreen extends Screen
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick)
     {
-        renderBackground(g);
+        renderBackground(g, mouseX, mouseY, partialTick);
         g.fill(0, 0, viewportW(), height, 0xFF1A1A1A);
 
         renderViewport(g, partialTick);
@@ -221,14 +232,13 @@ public class HatPlacementScreen extends Screen
         int screenX = viewportW() / 2;
         int screenY = height / 2 + (int)(bbH * renderScale * 0.4f);
 
-
         int scale = (int) minecraft.getWindow().getGuiScale();
         int fbH   = minecraft.getWindow().getHeight();
         RenderSystem.enableScissor(0, 0, viewportW() * scale, fbH);
 
-        PoseStack mvs = RenderSystem.getModelViewStack();
-        mvs.pushPose();
-        mvs.translate(screenX + camOffsetX, screenY + camOffsetY, 1050.0);
+        org.joml.Matrix4fStack mvs = RenderSystem.getModelViewStack();
+        mvs.pushMatrix();
+        mvs.translate((float)(screenX + camOffsetX), (float)(screenY + camOffsetY), 1050.0F);
         mvs.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
 
@@ -284,7 +294,7 @@ public class HatPlacementScreen extends Screen
 
         if (previewHat == null) drawWireframe3D(pose, bbH);
 
-        mvs.popPose();
+        mvs.popMatrix();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.disableScissor();
 
@@ -297,9 +307,8 @@ public class HatPlacementScreen extends Screen
         RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionColorShader);
 
         org.joml.Matrix4f mat = pose.last().pose();
-        Tesselator tes = Tesselator.getInstance();
-        BufferBuilder buf = tes.getBuilder();
-        buf.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buf = Tesselator.getInstance().begin(
+            VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
         int   lines   = 10;
         float spacing = 0.5f;
@@ -310,14 +319,14 @@ public class HatPlacementScreen extends Screen
             float bright = i == 0 ? 0.55f : 0.28f;
             float alpha  = i == 0 ? 1.0f  : 0.7f;
 
-            buf.vertex(mat, -extent, 0f, p).color(bright, bright, bright, alpha).endVertex();
-            buf.vertex(mat,  extent, 0f, p).color(bright, bright, bright, alpha).endVertex();
-
-            buf.vertex(mat, p, 0f, -extent).color(bright, bright, bright, alpha).endVertex();
-            buf.vertex(mat, p, 0f,  extent).color(bright, bright, bright, alpha).endVertex();
+            buf.addVertex(mat, -extent, 0f, p).setColor(bright, bright, bright, alpha);
+            buf.addVertex(mat,  extent, 0f, p).setColor(bright, bright, bright, alpha);
+            buf.addVertex(mat, p, 0f, -extent).setColor(bright, bright, bright, alpha);
+            buf.addVertex(mat, p, 0f,  extent).setColor(bright, bright, bright, alpha);
         }
 
-        tes.end();
+        com.mojang.blaze3d.vertex.MeshData mesh = buf.build();
+        if (mesh != null) BufferUploader.drawWithShader(mesh);
         RenderSystem.enableDepthTest();
     }
 
@@ -337,24 +346,27 @@ public class HatPlacementScreen extends Screen
 
         org.joml.Matrix4f mat = pose.last().pose();
 
-        Tesselator tes = Tesselator.getInstance();
-        BufferBuilder buf = tes.getBuilder();
-        buf.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buf = Tesselator.getInstance().begin(
+            VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
-        buf.vertex(mat,-hs,-hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs,-hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs,-hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs,-hs, hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs,-hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs,-hs, hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat,-hs,-hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs,-hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat,-hs, hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs, hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs, hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs, hs, hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs, hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs, hs, hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat,-hs, hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs, hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat,-hs,-hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs, hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs,-hs,-hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs, hs,-hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat, hs,-hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat, hs, hs, hs).color(r,gr,bl,a).endVertex();
-        buf.vertex(mat,-hs,-hs, hs).color(r,gr,bl,a).endVertex(); buf.vertex(mat,-hs, hs, hs).color(r,gr,bl,a).endVertex();
+        // bottom rect
+        buf.addVertex(mat,-hs,-hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs,-hs,-hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs,-hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs,-hs, hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs,-hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs,-hs, hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat,-hs,-hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs,-hs,-hs).setColor(r,gr,bl,a);
+        // top rect
+        buf.addVertex(mat,-hs, hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs, hs,-hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs, hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs, hs, hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs, hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs, hs, hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat,-hs, hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs, hs,-hs).setColor(r,gr,bl,a);
+        // verticals
+        buf.addVertex(mat,-hs,-hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs, hs,-hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs,-hs,-hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs, hs,-hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat, hs,-hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat, hs, hs, hs).setColor(r,gr,bl,a);
+        buf.addVertex(mat,-hs,-hs, hs).setColor(r,gr,bl,a); buf.addVertex(mat,-hs, hs, hs).setColor(r,gr,bl,a);
 
-        tes.end();
+        com.mojang.blaze3d.vertex.MeshData mesh = buf.build();
+        if (mesh != null) BufferUploader.drawWithShader(mesh);
         pose.popPose();
     }
 
@@ -688,7 +700,7 @@ public class HatPlacementScreen extends Screen
     }
 
     @Override
-    public boolean mouseScrolled(double mx, double my, double delta)
+    public boolean mouseScrolled(double mx, double my, double scrollX, double delta)
     {
         if (entityDropdownOpen == 1) {
             int max = Math.max(0, filteredEntityItems().size() - DROPDOWN_ROWS);
@@ -704,7 +716,7 @@ public class HatPlacementScreen extends Screen
             camZoom = Mth.clamp(camZoom - (float)(delta * 0.15f), 0.2f, 5f);
             return true;
         }
-        return super.mouseScrolled(mx, my, delta);
+        return super.mouseScrolled(mx, my, scrollX, delta);
     }
 
     @Override
@@ -901,11 +913,24 @@ public class HatPlacementScreen extends Screen
     @Override
     public void onClose()
     {
+        persistCurrent();
         if (savedGuiScale != -1) {
             minecraft.getWindow().setGuiScale(savedGuiScale);
             savedGuiScale = -1;
         }
         minecraft.setScreen(parent);
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick)
+    {
+        // disable 1.21+ menu-blur effect over the world
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics g)
+    {
+        // skip the in-world dark dirt-pattern overlay
     }
 
     @Override

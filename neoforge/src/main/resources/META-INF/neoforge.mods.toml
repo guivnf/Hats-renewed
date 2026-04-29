@@ -1,0 +1,41 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "LGPL"
+
+[[mods]]
+    modId = "hats"
+    version = "${version}"
+    displayName = "HatsRenewed"
+    description = "Put a hat on it."
+    authors = "iChun, guivnf"
+    logoFile = "hats.png"
+
+[[dependencies.hats]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${neoForgeVersion},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.hats]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[1.21.1,1.22)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.hats]]
+    modId = "architectury"
+    type = "required"
+    versionRange = "[13,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[mixins]]
+    config = "hats.mixins.json"
+
+[[mixins]]
+    config = "hats.compat.mixins.json"
+
+[[mixins]]
+    config = "hats.neoforge.mixins.json"
