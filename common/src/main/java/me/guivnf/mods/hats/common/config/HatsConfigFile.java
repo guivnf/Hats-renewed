@@ -77,6 +77,7 @@ public final class HatsConfigFile
             case "server.spawn_chance.legendary" -> cfg.rarityChances.put(HatRarity.LEGENDARY, parseDouble(value));
             case "client.max_hats_on_screen" -> cfg.maxHatRendersPerFrame = parseInt(value, cfg.maxHatRendersPerFrame);
             case "client.display_hat_unlock_toast" -> cfg.displayHatUnlockToast = parseBool(value);
+            case "server.hat_entity_blacklist" -> cfg.entityIdBlacklist = parseStringList(value);
             default -> HatsMod.LOGGER.warn("Unknown hats.toml key: {}", path);
         }
     }
@@ -141,6 +142,10 @@ public final class HatsConfigFile
         sb.append("# Hats that will never roll as a random mob hat. Use the hat's\n");
         sb.append("# display name as shown in the hat menu, e.g. [\"Top Hat\", \"Garland\"].\n");
         sb.append("hat_blacklist = []\n\n");
+
+        sb.append("# Exclude Mobs of Mob groups from Spawning with hats. Use Mob IDs\n");
+        sb.append("# to exclude them e.g. [\"minecraft\", \"minecraft:zombie\"]\n");
+        sb.append("hat_entity_blacklist = []\n\n");
 
         sb.append("# If true, hats stay visible even when the wearing entity is invisible\n");
         sb.append("# (invisibility potion, spectator, etc). Default: false.\n");

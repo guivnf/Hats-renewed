@@ -6,6 +6,7 @@ import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.networking.NetworkManager;
 import me.guivnf.mods.hats.HatsMod;
+import me.guivnf.mods.hats.common.config.HatsConfig;
 import me.guivnf.mods.hats.common.hat.HatPart;
 import me.guivnf.mods.hats.common.hat.HatRegistry;
 import me.guivnf.mods.hats.common.network.HatsNetwork;
@@ -25,11 +26,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ServerEventHandler
 {
+
     public static void register()
     {
         EntityEvent.LIVING_DEATH.register(ServerEventHandler::onEntityDeath);
@@ -198,11 +202,24 @@ public class ServerEventHandler
 
     public static void onMobSpawn(Mob mob, ServerLevel level)
     {
+
         if (HatRegistry.getAllPools().isEmpty()) return;
 
-        HatsSavedData data = HatsSavedData.get(level);
         String registryName = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
                 .getKey(mob.getType()).toString();
+
+        HatsConfig config = HatsMod.getConfig();
+
+        if (!config.entityIdBlacklist.isEmpty()){
+            List<String> entityIdBlacklist = config.entityIdBlacklist;
+            for(String entry : entityIdBlacklist){
+               if(registryName.startsWith(entry)){
+                   return;
+               }
+            }
+        }
+
+        HatsSavedData data = HatsSavedData.get(level);
 
         data.assignMobHat(mob.getUUID(), registryName);
 

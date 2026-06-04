@@ -2,9 +2,7 @@ package me.guivnf.mods.hats.common.config;
 
 import me.guivnf.mods.hats.common.hat.HatRarity;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class HatsConfig
 {
@@ -17,6 +15,8 @@ public class HatsConfig
     public double bossRarityBonus = 0.20;
 
     public Map<String, Double> entityHatChanceOverrides = new HashMap<>();
+
+    public List<String> entityIdBlacklist = new ArrayList<>();
 
     public java.util.List<String> disabledEntities = new java.util.ArrayList<>();
 
