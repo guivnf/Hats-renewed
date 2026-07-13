@@ -66,6 +66,7 @@ public final class HatsConfigFile
         String path = section.isEmpty() ? key : section + "." + key;
         switch (path) {
             case "server.hat_blacklist" -> cfg.hatBlacklist = parseStringList(value);
+            case "server.disabled_entities" -> cfg.disabledEntities = parseStringList(value);
             case "server.hats_show_when_invisible" -> cfg.renderOnInvisible = parseBool(value);
             case "server.hats_prevent_undead_fire" -> cfg.preventUndeadFire = parseBool(value);
             case "server.disable_contributor_hats" -> cfg.disableContributorHats = parseBool(value);
@@ -141,6 +142,13 @@ public final class HatsConfigFile
         sb.append("# Hats that will never roll as a random mob hat. Use the hat's\n");
         sb.append("# display name as shown in the hat menu, e.g. [\"Top Hat\", \"Garland\"].\n");
         sb.append("hat_blacklist = []\n\n");
+
+        sb.append("# Entities that will never spawn wearing a hat (an entity blacklist).\n");
+        sb.append("# Use a full entity ID to exclude a single mob, e.g. \"minecraft:zombie\",\n");
+        sb.append("# or a namespace on its own to exclude every entity from that mod,\n");
+        sb.append("# e.g. \"minecraft\" blocks all vanilla mobs. Example:\n");
+        sb.append("# [\"minecraft:creeper\", \"minecraft:zombie\"].\n");
+        sb.append("disabled_entities = []\n\n");
 
         sb.append("# If true, hats stay visible even when the wearing entity is invisible\n");
         sb.append("# (invisibility potion, spectator, etc). Default: false.\n");
