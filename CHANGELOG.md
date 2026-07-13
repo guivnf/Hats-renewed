@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 20.1.1 - 2026-07-12
+
+### Added
+  - Config option to stop specific entities from spawning with hats. Set `disabled_entities` in hats.toml to a list of full entity ids (e.g. "minecraft:zombie") or namespaces to exclude a whole mod (e.g. "minecraft").
+
+---
+
 ## 20.1.0 - 2026-04-27
 
 ### Added
