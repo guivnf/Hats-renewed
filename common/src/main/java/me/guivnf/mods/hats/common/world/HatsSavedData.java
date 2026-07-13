@@ -156,7 +156,7 @@ public class HatsSavedData
 
         HatsConfig cfg = config();
 
-        if (cfg.disabledEntities.contains(entityRegistryName)) return;
+        if (isEntityDisabled(cfg, entityRegistryName)) return;
 
         RAND.setSeed(Math.abs((cfg.randSeed + entityUuid).hashCode()) * 425480085L);
 
@@ -184,6 +184,21 @@ public class HatsSavedData
 
         entityHats.put(entityUuid, hat);
         setDirty();
+    }
+
+    private static boolean isEntityDisabled(HatsConfig cfg, String entityRegistryName)
+    {
+        if (cfg.disabledEntities.isEmpty()) return false;
+
+        int colon = entityRegistryName.indexOf(':');
+        String namespace = colon >= 0 ? entityRegistryName.substring(0, colon) : entityRegistryName;
+
+        for (String entry : cfg.disabledEntities) {
+            if (entry.equals(entityRegistryName)) return true;
+            if (entry.equals(namespace)) return true;
+        }
+
+        return false;
     }
 
     @org.jetbrains.annotations.Nullable
