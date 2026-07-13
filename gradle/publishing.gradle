@@ -1,0 +1,143 @@
+// ===================================================================================================
+// Unified multi-platform publishing for Hats Renewed, powered by the mod-publish-plugin:
+//   https://github.com/modmuss50/mod-publish-plugin
+//
+// The changelog is pulled straight out of CHANGELOG.md for the current version, a "Tested against:"
+// footer is appended, and the NeoForge + Fabric jars are pushed to Modrinth and CurseForge in one go,
+// followed by a single Discord release announcement.
+//
+// This block lives in the *root* project (the plugin's recommended pattern for multi-loader builds), so
+// `./gradlew publishMods` publishes every loader/platform combination with one command.
+//
+// Required environment variables when publishing for real:
+//   HATS_MODRINTH_API      - Modrinth personal access token (needs the "Create versions" scope)
+//   HATS_CURSEFORGE_API    - CurseForge API token
+//   HATS_DISCORD_WEBHOOK   - Discord webhook URL for the release announcement (optional)
+//   DRY_RUN_DISCORD_WEBHOOK - Discord webhook used during dry runs (optional)
+//
+// Handy flags:
+//   ./gradlew publishMods                       publish to every configured destination
+//   ./gradlew publishMods -PpublishDryRun=true  build + validate everything without uploading anything
+// ===================================================================================================
+
+// The tracked mod_version property only holds the minor.patch portion; the major component is derived
+// from the Minecraft version (1.21.1 -> 21), matching the scheme in the root build.gradle.
+def mcParts = mc_version.split('\\.')
+def mcMinor = mcParts.length > 1 ? mcParts[1] : mc_version
+def modFullVersion = "${mcMinor}.${mod_version}"
+
+// --- Changelog extraction -------------------------------------------------------------------------
+
+// Pulls the section for the current version out of CHANGELOG.md.
+// Heading format: "## <version> - <yyyy-mm-dd>", captured up to the next "## " heading (or EOF).
+def extractCurrentChangelog = {
+    def changelogFile = rootProject.file("CHANGELOG.md")
+    if (!changelogFile.exists()) return null
+    def text = changelogFile.getText("UTF-8")
+    def matcher = text =~ /(?s)##\s+\Q${modFullVersion}\E\s+-\s+\d{4}-\d{2}-\d{2}\s*?\R(.*?)(?=\R##\s|\z)/
+    return matcher.find() ? matcher.group(1).trim() : null
+}
+
+def currentChangelog = extractCurrentChangelog()
+def releaseChangelog = currentChangelog == null ? null : """${currentChangelog}
+
+### **Tested against:**
+- **Minecraft:** ${mc_version}
+- **NeoForge:** ${neoforge_version}
+- **Fabric Loader:** ${fabric_loader_version}""".toString()
+
+if (releaseChangelog == null) {
+    logger.warn("[publishing] No changelog entry found for version ${modFullVersion} in CHANGELOG.md; " +
+            "the publishMods task will refuse to run until one is added.")
+}
+
+// Refuse to publish a version that has no matching changelog entry.
+gradle.taskGraph.whenReady { graph ->
+    boolean publishing = graph.allTasks.any {
+        it.name == "publishMods" || it.name.startsWith("publishCurseforge") ||
+        it.name.startsWith("publishModrinth") || it.name.startsWith("publishDiscord")
+    }
+    if (publishing && extractCurrentChangelog() == null) {
+        throw new GradleException("Cannot publish: no changelog entry found for version ${modFullVersion} in CHANGELOG.md")
+    }
+}
+
+// --- Publishing configuration ---------------------------------------------------------------------
+
+publishMods {
+    dryRun = providers.gradleProperty("publishDryRun").map { Boolean.parseBoolean(it) }.getOrElse(false)
+    type = STABLE
+    if (releaseChangelog != null) {
+        changelog = releaseChangelog
+    }
+
+    // Shared CurseForge options (token / project / supported MC versions) reused by each loader upload.
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("HATS_CURSEFORGE_API")
+        projectId = curseforge_id
+        projectSlug = curseforge_slug
+        minecraftVersions.add(mc_version)
+    }
+
+    // Shared Modrinth options.
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("HATS_MODRINTH_API")
+        projectId = modrinth_id
+        minecraftVersions.add(mc_version)
+    }
+
+    // --- CurseForge ---
+    curseforge("curseforgeNeoforge") {
+        from cfOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        displayName = "${mod_name} ${modFullVersion} - NeoForge ${mc_version}"
+        version = "${modFullVersion}-mc${mc_version}-neoforge"
+        announcementTitle = "Download from CurseForge (neoforge)"
+    }
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        displayName = "${mod_name} ${modFullVersion} - Fabric ${mc_version}"
+        version = "${modFullVersion}-mc${mc_version}-fabric"
+        announcementTitle = "Download from CurseForge (fabric)"
+    }
+
+    // --- Modrinth ---
+    modrinth("modrinthNeoforge") {
+        from mrOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        displayName = "${mod_name} ${modFullVersion} - NeoForge ${mc_version}"
+        version = "${modFullVersion}-mc${mc_version}-neoforge"
+        announcementTitle = "Download from Modrinth (neoforge)"
+    }
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        displayName = "${mod_name} ${modFullVersion} - Fabric ${mc_version}"
+        version = "${modFullVersion}-mc${mc_version}-fabric"
+        announcementTitle = "Download from Modrinth (fabric)"
+    }
+
+    // --- Discord (single announcement covering every upload above) ---
+    // Only wired up when a webhook is actually configured, so local/CI builds without the secret
+    // (and dry runs) don't fail on a missing webhook URL.
+    def discordWebhook = providers.environmentVariable("HATS_DISCORD_WEBHOOK")
+    if (discordWebhook.isPresent()) {
+        discord {
+            webhookUrl = discordWebhook
+            dryRunWebhookUrl = providers.environmentVariable("DRY_RUN_DISCORD_WEBHOOK")
+            username = "Update Notification"
+            avatarUrl = "https://raw.githubusercontent.com/Antikythera-Studios/Hats-renewed/refs/heads/1.21.1/Small_Icon_Hats.png"
+            content = changelog.map { "# ${mod_name} ${modFullVersion} is out!\n\n" + it }
+            style {
+                look = "MODERN"
+                link = "EMBED"
+                thumbnailUrl = "https://raw.githubusercontent.com/Antikythera-Studios/Hats-renewed/refs/heads/1.21.1/Small_Icon_Hats.png"
+            }
+        }
+    }
+}

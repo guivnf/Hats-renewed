@@ -28,3 +28,8 @@ run
 *.class
 *.war
 *.ear
+
+# publishing secrets (never commit tokens/webhooks)
+publish-secrets.sh
+.env
+.env.*
